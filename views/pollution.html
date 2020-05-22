@@ -1,0 +1,73 @@
+<html>
+
+<head>
+    <!--Load the AJAX API-->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <script type="text/javascript">
+        google.charts.load('current', { 'packages': ['line'] });
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+            $.get('/pollution/data', function (response) {
+                console.log(response);
+
+                // Create the data table.
+                // var data = new google.visualization.DataTable();
+                // data.addColumn('number', 'pm10');
+                // data.addColumn('number', 'pm2.5');
+                // data.addColumn('date', 'date');
+                // data.addRows(response);
+
+                // var options = {
+                //     title: 'Забрудненість повітря дрібними частинками за останній рік:',
+                //     width: 1000,
+                //     height: 800,
+                // };
+                var lineData = [];
+                for (var i = 0; i < response.length; ++i) {
+                    var item = response[i];
+                    lineData.push([new Date( Date.parse(item[0])), item[1], item[2]]);
+                }
+                var data = new google.visualization.DataTable();
+                data.addColumn('date', 'Month');
+                data.addColumn('number', "pm10");
+                data.addColumn('number', "pm2.5");
+
+                console.log(typeof lineData[0][0]);
+                data.addRows(lineData);
+
+                var options = {
+                    chart: {
+                        title: 'Забрудненість повітря дрібними частинками за останній рік:'
+                    },
+                    width: 1500,
+                    height: 500,
+                    series: {
+                        // Gives each series an axis name that matches the Y-axis below.
+                        0: { axis: 'pm10' },
+                        1: { axis: 'pm2.5' }
+                    },
+                    axes: {
+                        // Adds labels to each axis; they don't have to match the axis names.
+                        y: {
+                            Temps: { label: 'pm10' },
+                            Daylight: { label: 'pm2.5' }
+                        }
+                    }
+                };
+
+                var chart = new google.charts.Line(document.getElementById('chart_div'));
+                chart.draw(data, google.charts.Line.convertOptions(options));
+            }, 'json');
+        }
+    </script>
+</head>
+
+<body>
+    <!--Div that will hold the pie chart-->
+    <div id="chart_div"></div>
+</body>
+
+</html>
