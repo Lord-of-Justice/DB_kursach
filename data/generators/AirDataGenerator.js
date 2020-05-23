@@ -1,23 +1,23 @@
-function GenerateTemperature(){
-    return GenerateRandomNumber(20, 26);
-}
+// function GenerateTemperature(){
+//     return GenerateRandomNumber(20, 26);
+// }
 
-function GenerateHumidity(){
-    return GenerateRandomNumber(38,62);
-}
+// function GenerateHumidity(){
+//     return GenerateRandomNumber(38,62);
+// }
 
 function GenerateNi(){
-    return GenerateRandomNumber(77.5,78.7);
+    return GenerateRandomNumber(77.3,79);
 }
 function GenerateO2(){
-    return GenerateRandomNumber(19.2,21);
+    return GenerateRandomNumber(19,21.2);
 }
 function GenerateCO2(){
-    return GenerateRandomNumber(0.03,0.09);
+    return GenerateRandomNumber(0.02,0.11);
 }
 function GeneratePM(k, humidity) {  
     let eps = 0.02;    
-    if(humidity < 60 && humidity > 40 && +GenerateRandomNumber(-1, 40) < 0)
+    if(humidity < 80 && humidity > 30 && +GenerateRandomNumber(-1, 40) < 0)
         eps *= 5;
     return +k / +humidity + +GenerateRandomNumber(-eps, eps);
 }
@@ -33,8 +33,8 @@ function GenerateRandomNumber(max, min) {
 }
 
 module.exports = {
-    GenerateTemperature : GenerateTemperature,
-    GenerateHumidity : GenerateHumidity,
+    // GenerateTemperature : GenerateTemperature,
+    // GenerateHumidity : GenerateHumidity,
     GenerateNi : GenerateNi,
     GenerateRandomNumber : GenerateRandomNumber,
     GenerateO2: GenerateO2,

@@ -15,14 +15,10 @@
                 var lineData = [];
                 for (var i = 0; i < response.length; ++i) {
                     var item = response[i];
-                    lineData.push([new Date( Date.parse(item[0])), 20, 25, 40, 60, item[1], item[2]]);
+                    lineData.push([new Date( Date.parse(item[0])), item[1], item[2]]);
                 }
                 var data = new google.visualization.DataTable();
                 data.addColumn('date', 'Month');
-                data.addColumn('number', "Normal Temperature (low param)");
-                data.addColumn('number', "Normal Temperature (high param)");
-                data.addColumn('number', "Normal Humidity (low param)");
-                data.addColumn('number', "Normal Humidity (high param)");
                 data.addColumn('number', "Temperature");
                 data.addColumn('number', "Humidity");
 

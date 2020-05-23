@@ -6,7 +6,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     <script type="text/javascript">
-        google.charts.load('current', {'packages':['scatter']});
+        google.charts.load('current', { 'packages': ['scatter'] });
         google.charts.setOnLoadCallback(drawChart);
 
         function drawChart() {
@@ -33,11 +33,39 @@
             }, 'json');
         }
     </script>
+    <script type="text/javascript">
+        google.charts.load('current', { 'packages': ['corechart'] });
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+            $.get('/regression', function (response) {
+                console.log(response);
+
+                // Create the data table.
+                var data = new google.visualization.DataTable();
+                data.addColumn('number', 'Pollution');
+                data.addColumn('number', 'Регресія');
+                data.addRows(response);
+
+                var options = {
+                    title: 'Лінія регресії:',
+                    width: 1000,
+                    height: 800,
+                    hAxis: { title: 'Pollution' },
+                    vAxis: { title: 'Humidity' },
+                };
+
+                var chart = new google.visualization.LineChart(document.getElementById('chart_div2'));
+
+            chart.draw(data, options);
+            }, 'json');
+        }
+    </script>
 </head>
 
 <body>
-    <!--Div that will hold the pie chart-->
     <div id="chart_div"></div>
+    <div id="chart_div2"></div>
 </body>
 
 </html>

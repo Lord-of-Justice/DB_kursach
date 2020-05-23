@@ -26,16 +26,20 @@
                 data.addRows(chartData);
 
                 var options = {
-                    title: 'Склад повітря у приміщені:',
+                    title: 'Склад повітря:',
                     width: 1000,
                     height: 800,
                     sliceVisibilityThreshol: 0,
                     is3D: true,
                 };
 
-                var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+                var my_div = document.getElementById('chart_div');
+                var my_chart = new google.visualization.PieChart(my_div);
 
-                chart.draw(data, options);
+                google.visualization.events.addListener(my_chart, 'ready', function () {
+                    my_div.innerHTML = '<img src="' + my_chart.getImageURI() + '">';
+                });
+                my_chart.draw(data, options);
             }, 'json');
         }
     </script>

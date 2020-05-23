@@ -1,0 +1,53 @@
+<html>
+
+<head>
+    <!--Load the AJAX API-->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <script type="text/javascript">
+        google.charts.load('current', { 'packages': ['corechart'] });
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+            $.get('/temperaturethrouhg7years/data', function (response) {
+                console.log(response);
+
+                let year = 2013;
+                const arrAvg = arr => arr.reduce((a, b) => a + b, 0) / arr.length;
+                for (var idx = 0; idx < response.length; ++idx) {
+                    var item = response[idx];
+                    item.push(arrAvg(item));
+                    item.unshift(year.toString());
+                    year++;
+                }
+                response.unshift(['Month', 'Січень', 'Лютий', 'Березень', 'Квітень', 'Травень', 'Червень',
+                    'Липень', 'Серпень', 'Вересень', 'Жовтень', 'Листопад', 'Грудень', 'Average'])
+                // Some raw data (not necessarily accurate)
+
+                console.log(response);
+                var data = google.visualization.arrayToDataTable(response);
+
+                var options = {
+                    title: 'Середня температури за 7 років',
+                    vAxis: { title: 'Температура' },
+                    hAxis: { title: 'Місяць' },
+                    seriesType: 'bars',
+                    width: 1800,
+                    height: 800,
+                    series: {12: {type: 'line', color: 'red'}} 
+                };
+
+                var chart = new google.visualization.ComboChart(document.getElementById('chart_div'));
+                chart.draw(data, options);
+            }, 'json');
+        }
+    </script>
+</head>
+
+<body>
+    <!--Div that will hold the pie chart-->
+    <div id="chart_div"></div>
+</body>
+
+</html>
