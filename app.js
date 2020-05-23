@@ -64,12 +64,12 @@ app.get("/data", (req, res) => {
       const humidity = +obj.U;
       return [date, temperature, humidity];
     });
-    dataForDb = dataForDb.filter(d => d[0] > new Date(2012, 12, 0, 30, 0, 0, 0) && d[0] < new Date(2020, 0, 1, 0, 0, 0, 0));
     let dataForDb = [];
     for (let i = 0; i < neededData.length; i += 2) {
       let item = neededData[i];
       dataForDb.push([item[0], item[1], item[2]]);
     }
+    dataForDb = dataForDb.filter(d => d[0] > new Date(2012, 12, 0, 30, 0, 0, 0));
 
     console.log("Hello");
     const airs = validator.ValidateAirConstituents(generator.GenerateAirArray(dataForDb));
@@ -149,8 +149,7 @@ app.get("/pollution/data", (req, res) => {
   air.getAll()
     .then(airs => {
       let data = addDays(airs);
-      let year = new Date(2018, 12, 0, 30, 0, 0, 0);
-      let lastYear = data.filter(d => d.date > year);
+      let lastYear = data.filter(d => d.date.getFullYear() > 2018);
       let pollution = [];
       for (let i = 0; i < lastYear.length; ++i) {
         let item = lastYear[i];
@@ -218,8 +217,7 @@ app.get("/aircomposition/data", (req, res) => {
   air.getAll()
     .then(airs => {
       let data = addDays(airs);
-      let year = new Date(2018, 12, 0, 30, 0, 0, 0);
-      let lastYear = data.filter(d => d.date > year);
+      let lastYear = data.filter(d => d.date.getFullYear() > 2018);
       let air = [];
       for (let i = 0; i < lastYear.length; ++i) {
         let item = lastYear[i];
@@ -241,21 +239,27 @@ app.get("/temperaturethrouhg7years/data", (req, res) => {
   air.getAll()
     .then(airs => {
       let data = addDays(airs);
-      let year19 = data.filter(d => d.date.getFullYear() > 2018);
+      let year20 = data.filter(d => d.date.getFullYear() > 2019);
+      let year19 = data.filter(d => d.date.getFullYear() > 2018 && d.date.getFullYear() < 2020);
       let year18 = data.filter(d => d.date.getFullYear() > 2017 && d.date.getFullYear() < 2019);
       let year17 = data.filter(d => d.date.getFullYear() > 2016 && d.date.getFullYear() < 2018);
       let year16 = data.filter(d => d.date.getFullYear() > 2015 && d.date.getFullYear() < 2017);
       let year15 = data.filter(d => d.date.getFullYear() > 2014 && d.date.getFullYear() < 2016);
       let year14 = data.filter(d => d.date.getFullYear() > 2013 && d.date.getFullYear() < 2015);
       let year13 = data.filter(d => d.date.getFullYear() > 2012 && d.date.getFullYear() < 2014);
+      let nowadays = getMonthTemperature(year20).reverse();
+      for (let i = 0; i < 7; i++){
+        nowadays.push(0);
+      }
       const yearsStat = [
-        getMonthTemperature(year13),
-        getMonthTemperature(year14),
-        getMonthTemperature(year15),
-        getMonthTemperature(year16),
-        getMonthTemperature(year17),
-        getMonthTemperature(year18),
-        getMonthTemperature(year19),
+        getMonthTemperature(year13).reverse(),
+        getMonthTemperature(year14).reverse(),
+        getMonthTemperature(year15).reverse(),
+        getMonthTemperature(year16).reverse(),
+        getMonthTemperature(year17).reverse(),
+        getMonthTemperature(year18).reverse(),
+        getMonthTemperature(year19).reverse(),
+        nowadays
       ];
       res.json(yearsStat);
     })
