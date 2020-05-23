@@ -10,37 +10,36 @@
         google.charts.setOnLoadCallback(drawChart);
 
         function drawChart() {
-            $.get('/pollution/data', function (response) {
+            $.get('/tempandhum/data', function (response) {
                 console.log(response);
                 var lineData = [];
                 for (var i = 0; i < response.length; ++i) {
                     var item = response[i];
-                    lineData.push([new Date( Date.parse(item[0])), item[1], item[2]]);
+                    lineData.push([new Date( Date.parse(item[0])), 20, 25, 40, 60, item[1], item[2]]);
                 }
                 var data = new google.visualization.DataTable();
                 data.addColumn('date', 'Month');
-                data.addColumn('number', "pm10");
-                data.addColumn('number', "pm2.5");
+                data.addColumn('number', "Normal Temperature (low param)");
+                data.addColumn('number', "Normal Temperature (high param)");
+                data.addColumn('number', "Normal Humidity (low param)");
+                data.addColumn('number', "Normal Humidity (high param)");
+                data.addColumn('number', "Temperature");
+                data.addColumn('number', "Humidity");
 
                 console.log(typeof lineData[0][0]);
                 data.addRows(lineData);
 
                 var options = {
                     chart: {
-                        title: 'Забрудненість повітря дрібними частинками за останній рік:'
+                        title: 'Показники температури і вологості за останній рік:'
                     },
                     width: 1800,
                     height: 700,
-                    // series: {
-                    //     // Gives each series an axis name that matches the Y-axis below.
-                    //     0: { axis: 'pm10' },
-                    //     1: { axis: 'pm2.5' }
-                    // },
                     axes: {
                         // Adds labels to each axis; they don't have to match the axis names.
                         y: {
-                            Temps: { label: 'pm10' },
-                            Daylight: { label: 'pm2.5' }
+                            Temps: { label: 'Temperature' },
+                            Daylight: { label: 'Humidity' }
                         }
                     }
                 };

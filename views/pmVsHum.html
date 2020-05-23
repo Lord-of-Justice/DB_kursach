@@ -10,7 +10,7 @@
         google.charts.setOnLoadCallback(drawChart);
 
         function drawChart() {
-            $.get('/humidity/data', function (response) {
+            $.get('/pmVsHum/data', function (response) {
                 console.log(response);
 
                 // Create the data table.

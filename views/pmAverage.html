@@ -10,7 +10,7 @@
         google.charts.setOnLoadCallback(drawChart);
 
         function drawChart() {
-            $.get('/aircomposition/data', function (response) {
+            $.get('/pmaverage/data', function (response) {
                 console.log(response);
 
                 var chartData = [];
@@ -25,11 +25,12 @@
                 data.addColumn('number', 'Slices');
                 data.addRows(chartData);
 
-                var options = {
-                    'title': 'Склад повітря у приміщені:',
-                    'width': 1000,
-                    'height': 800,
-                    'sliceVisibilityThreshold': 0
+                var options = {                    
+                    title: 'Відношення дрібних частинок у приміщені:',
+                    width: 1000,
+                    height: 800,
+                    sliceVisibilityThreshol: 0,
+                    pieHole: 0.4,
                 };
 
                 var chart = new google.visualization.PieChart(document.getElementById('chart_div'));

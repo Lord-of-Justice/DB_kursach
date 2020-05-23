@@ -1,14 +1,16 @@
 const AirDataGenerator = require("./AirDataGenerator.js");
 
 function GenerateAir(date) {
+    const t = AirDataGenerator.GenerateTemperature();
+    const h = AirDataGenerator.GenerateHumidity(t);    
     return {
-        temperature: AirDataGenerator.GenerateTemperature(),
-        humidity: AirDataGenerator.GenerateHumidity(),
+        temperature: t,
+        humidity: h,
         ni: AirDataGenerator.GenerateNi(),
         o2: AirDataGenerator.GenerateO2(),
         co2: AirDataGenerator.GenerateCO2(),
-        pm10: AirDataGenerator.GeneratePM10(),
-        pm2_5: AirDataGenerator.GeneratePM2_5(),
+        pm10: AirDataGenerator.GeneratePM10(h),
+        pm2_5: AirDataGenerator.GeneratePM2_5(h),
         date: date
     };
 }

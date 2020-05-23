@@ -79,7 +79,7 @@ app.get("/air", (req, res) => {
 });
 
 // for diagrams
-app.get("/aircomposition/data", (req, res) => {
+app.get("/airaverage/data", (req, res) => {
   air.getAll()
     .then(airs => {
       let averageO2 = d3.mean(airs, d => d.o2);
@@ -88,15 +88,15 @@ app.get("/aircomposition/data", (req, res) => {
       let data = [
         {
           'name': 'CO2',
-          'amount': averageCO2 * 10
+          'amount': averageCO2 * 5
         },
         {
           'name': 'O2',
-          'amount': averageO2 * 10
+          'amount': averageO2 
         },
         {
           'name': 'N',
-          'amount': averageNi * 10
+          'amount': averageNi 
         }];
       res.json(data);
     })
@@ -105,17 +105,17 @@ app.get("/aircomposition/data", (req, res) => {
       res.end();
     });
 });
-app.get("/aircomposition", (req, res) => {
-  res.render('airСomposition');
+app.get("/airaverage", (req, res) => {
+  res.render('airAverage');
 });
 
-app.get("/humidity/data", (req, res) => {
+app.get("/pmVsHum/data", (req, res) => {
   air.getAll()
     .then(airs => {
       let humidity = [];
       for (let i = 0; i < airs.length; ++i) {
         let item = airs[i];
-        let pollution = (item.pm10 + item.pm2_5)/2; 
+        let pollution = (item.pm10 + item.pm2_5); 
         humidity.push([pollution, item.humidity]);
       }
       res.json(humidity);
@@ -125,7 +125,7 @@ app.get("/humidity/data", (req, res) => {
       res.end();
     });
 });
-app.get("/humidity", (req, res) => {
+app.get("/pmVsHum", (req, res) => {
   res.render('pmVsHum');
 });
 
@@ -133,14 +133,12 @@ app.get("/pollution/data", (req, res) => {
   air.getAll()
     .then(airs => {
       let year = new Date(2018, 12, 0, 30, 0, 0, 0);
-      console.log(year);
       let lastYear = airs.filter(d => d.date > year);
       let pollution = [];
       for (let i = 0; i < lastYear.length; ++i) {
         let item = lastYear[i];
         pollution.push([item.date, item.pm10, item.pm2_5]);
       }
-      console.log(lastYear[0].date);
       res.json(pollution);
     })
     .catch(() => {
@@ -150,6 +148,100 @@ app.get("/pollution/data", (req, res) => {
 });
 app.get("/pollution", (req, res) => {
   res.render('pollution');
+});
+
+app.get("/tempandhum/data", (req, res) => {
+  air.getAll()
+    .then(airs => {
+      let year = new Date(2018, 12, 0, 30, 0, 0, 0);
+      let lastYear = airs.filter(d => d.date > year);
+      let pollution = [];
+      for (let i = 0; i < lastYear.length; ++i) {
+        let item = lastYear[i];
+        pollution.push([item.date, item.temperature, item.humidity]);
+      }
+      res.json(pollution);
+    })
+    .catch(() => {
+      res.status(404).write("Not found");
+      res.end();
+    });
+});
+app.get("/tempandhum", (req, res) => {
+  res.render('tempAndHum');
+});
+
+app.get("/pmaverage/data", (req, res) => {
+  air.getAll()
+    .then(airs => {
+      let averagePm10 = d3.mean(airs, d => d.pm10);
+      let averagePm25 = d3.mean(airs, d => d.pm2_5);
+      let data = [
+        {
+          'name': 'pm10',
+          'amount': averagePm10
+        },
+        {
+          'name': 'pm2_5',
+          'amount': averagePm25 
+        }];
+      res.json(data);
+    })
+    .catch(() => {
+      res.status(404).write("Not found");
+      res.end();
+    });
+});
+app.get("/pmaverage", (req, res) => {
+  res.render('pmAverage');
+});
+
+app.get("/aircomposition/data", (req, res) => {
+  air.getAll()
+    .then(airs => {
+      let year = new Date(2018, 12, 0, 30, 0, 0, 0);
+      let lastYear = airs.filter(d => d.date > year);
+      let air = [];
+      for (let i = 0; i < lastYear.length; ++i) {
+        let item = lastYear[i];
+        air.push([item.date, item.co2, item.o2, item.ni]);
+      }
+      res.json(air);
+    })
+    .catch(() => {
+      res.status(404).write("Not found");
+      res.end();
+    });
+});
+app.get("/aircomposition", (req, res) => {
+  res.render('airComposition');
+});
+
+app.get("/humidity/data", (req, res) => {
+  air.getAll()
+    .then(airs => {      
+      let humAndTemp = [];
+      for (let i = 0; i < airs.length; ++i) {
+        let item = airs[i];
+        humAndTemp.push([item.temperature, item.humidity]);
+      }
+      let humidity = [];
+      humidity.push([20, d3.mean(humAndTemp.filter(d => d[0] >= 20 && d[0] < 21), d => d[1]) ]);
+      humidity.push([21, d3.mean(humAndTemp.filter(d => d[0] >= 21 && d[0] < 22), d => d[1])]);
+      humidity.push([22, d3.mean(humAndTemp.filter(d => d[0] >= 22 && d[0] < 23), d => d[1])]);
+      humidity.push([23, d3.mean(humAndTemp.filter(d => d[0] >= 23 && d[0] < 24), d => d[1])]);
+      humidity.push([24, d3.mean(humAndTemp.filter(d => d[0] >= 24 && d[0] < 25), d => d[1])]);
+      humidity.push([25, d3.mean(humAndTemp.filter(d => d[0] >= 25), d => d[1])]);
+      humidity.unshift(["temp", "hum"]);
+      res.json(humidity);
+    })
+    .catch(() => {
+      res.status(404).write("Not found");
+      res.end();
+    });
+});
+app.get("/humidity", (req, res) => {
+  res.render('humidity');
 });
 
 app.listen(config.ServerPort, () => console.log(`listening on port ${config.ServerPort}`));
